@@ -1,0 +1,71 @@
+﻿--SEQUENCE--
+
+create SEQUENCE seq1
+increment by 2
+start with 100
+maxvalue 1000;
+
+select seq1.nextval from dual;
+
+select * from emp1;
+
+insert into emp1(empno,ename)
+VALUES(seq1.nextval,'HONGGIL');
+
+drop SEQUENCE seq1;
+
+--PL/SQL--
+
+set SERVEROUTPUT on -- 선언문
+
+-- 조건문--
+
+declare
+v_num NUMBER :=2;
+begin
+    if v_num=2 then
+        dbms_output.put_line('DB');
+    elsif v_num = 1 then
+        dbms_output.put_line('JAVA');
+    else
+        dbms_output.put_line('C');
+    end if;
+end;
+/
+
+-- 반복문 --
+
+-- while --
+DECLARE
+v_cnt number:=0;
+v_sum number:=0;
+begin
+    while v_cnt <= 10 loop --loop의 경우 조건을 아래 적음
+    v_cnt:= v_cnt+1;
+    v_sum:= v_sum + v_cnt;
+    dbms_output.put_line(v_cnt || ' ' || v_sum);
+end loop;
+end;
+/
+
+-- for문 --
+
+begin
+    for v_cnt in 1..11 loop
+    v_sum:= v_sum + v_cnt;
+    dbms_output.put_line(v_cnt || ' ' || v_sum);
+end loop;
+end;
+/
+
+-- loop문 --
+(부등호 인식안함.)
+begin
+    loop
+    v_cnt:= v_cnt+1;
+    v_sum:= v_sum + v_cnt;
+    dbms_output.put_line(v_cnt || ' ' || v_sum);
+    exit when v_cnt=11;
+end loop;
+end;
+/

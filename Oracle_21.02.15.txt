@@ -1,0 +1,217 @@
+﻿-- top N 질의
+최대 값, 최소 값을 추출할 때 사용
+
+select stu_no, stu_name,stu_height -- 조회할 거
+from (select stu_no, stu_name,stu_height --
+    from student -- 학생으로부터
+    where stu_height is not null -- 널 빼고
+    order by stu_height desc) -- 내림차순
+where rownum <= 5; -- 몇 개
+
+
+create table customer 
+c_code varchar2(4),
+c_name varchar2(30),
+c_ceo varchar2(12),
+c_addr varchar2(100),
+c_phone varchar2(13));
+
+EMPNO ENAME JOB MGR HIREDATE SAL COMM DEPTNO 
+
+--1.20 또는 30인 부서번호만 사원(emp)테이블에서 복사하여 emp1테이블을 생성해라.
+create table emp1
+as select * from emp
+where deptno in (20,30);
+
+--2.dept 테이블을 복사하여 dept1테이블을 생성해라.
+create table dept1
+as select * from dept;
+
+--3.salgrade테이블을 복사하여 salgrade1테이블을 생성해라.
+create table salgrade1
+as select * from salgrade;
+
+--4.각각의 테이블을 확인한다.
+desc emp1;
+desc dept1;
+desc salgrade1;
+
+--5.사원번호 7401, 사원이름 HOMER, 급여 1300, 부서번호 10인 사원이 오늘 입사하였다.
+insert into emp1 VALUES
+(7401,'HOMER',null, null, SYSDATE,1300,null,10);
+
+--6.사원번호 7323, 사원이름 BRANDA, 부서번호 30, 
+--사원번호 7499와 동일한 급여를 받는 사원이 입사하였다. (부질의)
+insert into emp1 VALUES 
+(7323,'BRANDA',null, null, SYSDATE, 
+(select sal
+from emp1
+where empno = 7499), null, 30);
+desc emp1;
+
+--7.사원(emp)테이블에서 부서번호가 10인 데이터를 emp1테이블에 삽입해라.
+insert into emp1
+select * 
+from emp
+where deptno = 10;
+
+--8.사원번호 7369의 사원직무를 ANALYST로 바꾸어라.
+update emp1
+set job = 'ANALYST'
+where empno = 7369;
+
+--9.부서번호 20인 직원들의 급여를 10% 감하라.
+update emp1
+set sal = sal*0.9
+where deptno = 20;
+
+--10.모든 사원의 급여를 +100 증가시켜라
+update emp1
+set sal = sal + 100;
+
+--11.지역이 DALLAS인 사원들의 급여를 10감하라. (부질의)
+update emp1
+set sal = sal-10
+where deptno =
+(select deptno
+from dept
+where loc like 'DALLAS');
+
+--12.사원번호 7499가 퇴사하였다.
+delete from emp1
+where empno = 7499;
+
+--13.부서번호 50, 부서이름 ‘PLANNING’, 지역 ‘MIAMI’가 추가되었다.
+insert into dept1 
+values (50, 'PLANNING', 'MIAMI');
+
+--14.부서번호가 40인 부서가 60으로 변경되었다.
+update dept1
+set deptno = 60
+where deptno = 40;
+
+--15.Dept1 테이블에 없는 부서번호들을 갖고 있는 사원들의 부서번호를 99로 변경하라. (부질의)
+update dept1
+set deptno = 99
+where dept not in 
+(select deptno
+from dept1);
+
+--16.JONES, JOSH, CLARK가 30번 부서로 바뀌었다.
+update dept1
+set deptno = 30
+where ename in ('JONES','JOSH', 'CLARK');
+
+--17.커미션이 null인 데이터를 0으로 바꾸어라.
+update emp1
+set comm=0
+where comm is null'
+
+--18.Emp1 전체 테이블의 데이터를 삭제하라.
+drop tabel emp1;
+
+--SP--
+create or REPLACE PROCEDURE test2
+(v_stu_no in student.stu_no%type,
+v_stu_grade in student.stu_grade %TYPE)
+IS BEGIN
+    update student
+    set stu_grade = v_stu_grade
+    where stu_no = v_stu_no;
+end test2;
+
+create or replace PROCEDURE pro
+(v_empno in emp.empno %type,
+v_ename in emp.ename %type,
+v_job in emp.job %type,
+v_mgr in emp.mgr %type,
+v_sal in emp.sal %type,
+v_deptno in emp.deptno %type)
+is begin
+insert into emp (empno, ename, job, mgr, sal, deptno)
+values (v_empno, v_ename, v_job, v_mgr, v_sal, v_deptno);
+end pro;
+/
+execute pro(2015,'JACKSON','CLEANER',7999,5000,50);
+select * from emp;
+/
+
+execute test2(20153075,3);
+
+CREATE OR REPLACE PROCEDURE test3
+(v_stu_no in student.stu_no %type,
+v_stu_name out student.stu_name %type)
+is begin
+    select stu_name
+    into v_stu_name
+    from student
+    where stu_no = v_stu_no;
+end test3;
+/
+variable d_stu_name varchar2(12); ??
+execute test3(20153075, :d_stu_name); ??
+
+print d_stu_name;
+
+--PROCEDURE--
+1.
+create PROCEDURE test10
+(v_sub_name in VARCHAR2,
+v_sub_prof in varchar2,
+v_sub_grade in number,
+v_sub_dept in varchar2)
+is
+v_sub_no char(3);
+begin
+    select max(sub_no)
+    into v_sub_no
+    from subject;
+    v_sub_no := to_number(v_sub_no)+1;
+
+    INSERT INTO subject
+    VALUES (v_sub_no,v_sub_name,v_sub_prof,v_sub_grade,
+    v_sub_dept);
+    end;
+    /
+    execute test10('컴퓨터','HONG',4,'COM');
+    select * from subject;
+    desc subject;
+
+2.
+
+create or replace FUNCTION test20
+(v_enr_grade in number)
+return CHAR
+is
+    enr_score char;
+begin
+    if v_enr_grade >= 90 then enr_score := 'A';
+        ELSIF v_enr_grade >= 90 then enr_score := 'B';
+            ELSE enr_score := 'F';
+                end if;
+                return (enr_score);
+    end test20;
+/
+
+variable dd char;
+
+execute :dd :=test20(95);
+
+print dd;
+
+--
+
+create or replace function test00000
+(v_sal in number)
+return varchar2
+is v_ename varchar2(10);
+begin
+    select ename into v_ename from emp
+    where sal=(select max(sal) from emp);
+    return (v_ename);
+end test00000;
+/
+variable nameK varchar2;
+
+execute : nameK :=test00000(2000);
+print nameK;

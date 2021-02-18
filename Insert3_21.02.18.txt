@@ -1,0 +1,18 @@
+﻿insert into rent values(1,'2020-07-30',101,1000,1);
+insert into rent values(2,'2020-07-30',101,500,2);
+insert into rent values(3,'2020-08-2',103,500,5);
+insert into rent values(4,'2020-08-2',102,1000,6);
+insert into rent values(5,'2020-08-2',102,1000,3);
+insert into rent values(6,'2020-08-3',104,2000,2);
+
+insert into video values(1,'극한직업','류승룡 이하늬','코미디');
+insert into video values(2,'기생충','송강호','드라마');
+insert into video values(3,'엑시트','조정석 윤아','코미디');
+insert into video values(4,'봉오동전투','유해진','액션');
+insert into video values(5,'나쁜녀석들','마동석','액션');
+insert into video values(6,'82년생김지영','정유미 공유','드라마');
+
+insert into cust values(101,'김진수',1,'서울 성북구','02-455-5544');
+insert into cust values(102,'김영희',2,'서울 강서구','02-299-2565');
+insert into cust values(103,'이영수',3,'서울 서초구','02-555-5555');
+insert into cust values(104,'김진숙',1,'서울 동대문구','02-444-4444');
